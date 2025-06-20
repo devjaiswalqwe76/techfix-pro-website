@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFE Tatkal Autofill</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        /* CSS from your original HTML */
+        html {
+            min-width: 750px;
+            max-width: 100%;
+            position: relative;
+            vertical-align: middle;
+            background: #b0e0e6;
+        }
+
+        form {
+            max-width: 1000px;
+            margin: 5px auto;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        label {
+            color: #000;
+            font-weight: light;
+            padding: 4px;
+            text-transform: capitalize;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            border: .5px solid #000;
+            border-radius: .5rem;
+            font-family: Nunito, sans-serif;
+        }
+
+        fieldset {
+            border-radius: 3px;
+            margin-bottom: 2px;
+            border: 1.5px solid #000;
+            border-top: 1.5px solid #000;
+            border-right: 1.5px solid #000;
+            border-bottom: 1.5px solid #000;
+            border-left: 1.5px solid #000;
+        }
+
+        legend {
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        .number {
+            background-color: #5fcf80;
+            color: #fff;
+            height: 25px;
+            width: 25px;
+            display: inline-block;
+            font-size: .8em;
+            margin-right: 4px;
+            line-height: 25px;
+            text-align: center;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, .2);
+            border-radius: 100%;
+        }
+
+        input[type=date],
+        input[type=number],
+        input[type=password],
+        input[type=text],
+        select {
+            background: rgba(255, 255, 255, .1);
+            border-radius: 3px;
+            border: none;
+            font-size: 15px;
+            height: auto;
+            margin: 0;
+            outline: 0;
+            height: auto;
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0 1px 0 rgba(0, 0, 0, .03) inset;
+            padding: 1px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        h1,
+        h3 {
+            text-align: center;
+        }
+
+        .registerbtn {
+            color: #fff;
+            font-size: 15px;
+            padding: 8px 15px 8px 15px;
+            margin: 8px 0;
+            border: 2px;
+            cursor: pointer;
+            width: 19.5%;
+            opacity: .8;
+            border-radius: 5px;
+        }
+
+        .registerbtn:hover {
+            opacity: 1;
+        }
+
+        .dropdown-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            margin-top: 1px;
+            border-radius: 4px;
+            max-height: 180px;
+            overflow: auto;
+            box-shadow: 1px 1px 1px 0 #bdbdbd;
+        }
+
+        .dropdown-list-item {
+            background-color: #fff;
+            padding: 6px 4px;
+            font-size: 14px;
+        }
+
+        .dropdown-list-item:hover {
+            background-color: #ffeded;
+            cursor: pointer;
+        }
+
+        /* Autocomplete specific styles (adjust as needed for aesthetics) */
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 180px;
+            overflow-y: auto; /* Use overflow-y for vertical scrolling */
+            box-shadow: 1px 1px 1px 0 #bdbdbd;
+            background-color: #fff; /* Ensure background is white */
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        .autocomplete-active {
+            background-color: #1e90ff !important;
+            color: #fff;
+        }
+
+        /* Flexbox for layout */
+        .flex {
+            display: flex;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .w-full {
+            width: 50%;
+        }
+
+        .field-group {
+            border: 1.5px solid #000;
+            border-top: none;
+            margin: 20px 1px;
+            padding: 6px;
+            border-radius: 3px;
+            margin-bottom: 2px;
+        }
+
+        .field-group h1 {
+            font: 19px verdana;
+            margin: -15px -5px 0;
+        }
+
+        .field-group h1 span {
+            float: left;
+        }
+
+        .field-group h1:before {
+            border-top: 1.5px solid #000;
+            content: ' ';
+            float: left;
+            margin: 9px 3px 0 -1px;
+            width: 16px;
+        }
+
+        .field-group h1:after {
+            border-top: 1.5px solid #000;
+            content: ' ';
+            display: block;
+            height: 24px;
+            left: 3px;
+            margin: 0 1px 0 0;
+            overflow: hidden;
+            position: relative;
+            top: 9px;
+            border-radius: 2px;
+        }
+
+        button:focus,
+        input:focus,
+        select:focus {
+            outline: 1px solid #00f;
+        }
+
+    </style>
+</head>
+<body>
+    <form>
+        <div style="display:flex;align-items:center">
+            <img alt="" src="rail_128.png" style="width:70px;height:70px;border-radius:20%" srcset="">
+            <div>
+                <p style="color:#0d47a1;padding:10px;margin:0;padding-top:0;padding-bottom:0;font-size:33px">LIFE Tatkal Autofill
+                <div id="versionContainer"></div>
+            </div>
+            <button id="openPopupTab" style="border:none;background:0 0;cursor:pointer;margin-left:auto;padding:0">
+                <img alt="new-tab-icon" src="new-tab-icon.png" style="width:50px">
+                <p style="margin:0">Open in New Tab</p>
+            </button>
+        </div>
+
+        <div id="dvMain" style="display:none">
+            <div id="notice-container" style="display:none;padding:10px;margin:10px 0;background:#fff8e1;border-left:4px solid #ffa000;font-family:sans-serif"></div>
+
+            <div class="field-group" style="padding-bottom:0">
+                <h1><span>License details</span></h1>
+                <p style="margin:4px">Left Days: <span id="UserPlanExpairy"></span></p>
+            </div>
+
+            <div class="field-group">
+                <h1><span>IRCTC credentials</span></h1>
+                <label>Username</label>
+                <input id="irctc-login" name="irctc-login" size="15">
+                <label>Password</label>
+                <input id="irctc-password" name="irctc-password" size="15" type="password">
+                <input id="showirctcpswd" type="checkbox">Show Password<br>
+                <label><input id="clearCheckbox" type="checkbox"> Login Manually (Best for Bypass Login issue)</label>
+            </div>
+
+            <div class="field-group">
+                <h1><span>Journey Details</span></h1>
+                <div class="autocomplete">
+                    <label>Source</label>
+                    <input id="from-station-input" name="from-station" size="30" placeholder="Type station name or station code">
+                </div>
+                <div class="autocomplete">
+                    <label>Destination</label>
+                    <input id="destination-station-input" name="destination-station" size="30" placeholder="Type station name or station code">
+                </div>
+                <br><br>
+                <label>Date</label>
+                <input id="journey-date" name="journey-date" type="date">
+                <div class="autocomplete">
+                    <label>Train no.</label>
+                    <input id="train-no" name="train-no" size="30" placeholder="Type train no. or name">
+                </div>
+                <br><br>
+                <label>Class</label>
+                <select id="journey-class-input" name="class">
+                    <option value="">All Classes</option>
+                    <option value="1A">AC First Class (1A)</option>
+                    <option value="2A">AC 2 Tier (2A)</option>
+                    <option value="3A">AC 3 Tier (3A)</option>
+                    <option value="SL">Sleeper (SL)</option>
+                    <option value="3E">AC 3 Economy (3E)</option>
+                    <option value="CC">AC Chair car (CC)</option>
+                    <option value="2S">Second Sitting (2S)</option>
+                    <option value="EV">Vistadome AC (EV)</option>
+                    <option value="EC">Exec. Chair Car (EC)</option>
+                    <option value="EA">Anubhuti Class (EA)</option>
+                    <option value="FC">First Class (FC)</option>
+                    <option value="VC">Vistadome Chair Car(VC)</option>
+                    <option value="VS">Visatodome Non Ac (VS)</option>
+                </select>
+                <label>Quota</label>
+                <select id="quota-input" name="Quota">
+                    <option value="GN">GENERAL</option>
+                    <option value="TQ">TATKAL</option>
+                    <option value="PT">PREMIUM TATKAL</option>
+                    <option value="LD">LADIES</option>
+                    <option value="SR">LOWER BERTH/SR.CITIZEN</option>
+                </select><br><br>
+                <div class="autocomplete">
+                    <label>Boarding Station</label>
+                    <input id="boarding-station-input" name="boarding-station" size="30" placeholder="Only required if other than source station."><br>
+                </div><br><br>
+                <label>Availability check</label>
+                <input id="AvailabilityCheck-1" name="AvailabilityCheck" type="radio" value="A"> Click automatically
+                <input id="AvailabilityCheck-2" name="AvailabilityCheck" type="radio" value="M"> Click Manually
+                <input id="AvailabilityCheck-3" name="AvailabilityCheck" type="radio" value="I"> Click Immediately<br><br>
+                <label>Auto click time SL</label>
+                <input id="slbooktime" name="slbooktime" size="4" value="10:59:59">
+                <label>AC&nbsp;</label><input id="acbooktime" name="acbooktime" size="4" value="09:59:59">
+                <label>GN&nbsp;</label><input id="gnbooktime" name="gnbooktime" size="4" value="07:59:59">
+            </div>
+
+            <div class="field-group">
+                <h1><span>Passenger Details</span></h1>
+                <label>Psg 1</label>
+                <input id="passenger-name-1" name="name" size="16" placeholder="Name" maxlength="16">
+                <input id="age-1" name="age" size="5" placeholder="Age">
+                <select id="passenger-gender-1" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <select id="passenger-berth-1" name="berth">
+                    <option value="">Berth</option>
+                    <option value="UB">Upper</option>
+                    <option value="LB">Lower</option>
+                    <option value="MB">Middle</option>
+                    <option value="SL">Side Lower</option>
+                    <option value="SU">Side Upper</option>
+                    <option value="WS">Window Side</option>
+                    <option value="CB">Cabin</option>
+                    <option value="CP">Coupe</option>
+                    <option value="SM">Side Middle</option>
+                </select>
+                <select id="passenger-food-1" name="food">
+                    <option value="">Food Choice</option>
+                    <option value="V">Veg</option>
+                    <option value="N">Non Veg</option>
+                    <option value="D">No Food</option>
+                </select>
+                <input id="passengerchildberth1" name="passengerchildberth" type="checkbox"><label>Half seat</label><br>
+
+                <label>Psg 2</label>
+                <input id="passenger-name-2" name="name" size="16" placeholder="Name" maxlength="16">
+                <input id="age-2" name="age" size="5" placeholder="Age">
+                <select id="passenger-gender-2" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <select id="passenger-berth-2" name="berth">
+                    <option value="">Berth</option>
+                    <option value="UB">Upper</option>
+                    <option value="LB">Lower</option>
+                    <option value="MB">Middle</option>
+                    <option value="SL">Side Lower</option>
+                    <option value="SU">Side Upper</option>
+                    <option value="WS">Window Side</option>
+                    <option value="CB">Cabin</option>
+                    <option value="CP">Coupe</option>
+                    <option value="SM">Side Middle</option>
+                </select>
+                <select id="passenger-food-2" name="food">
+                    <option value="">Food Choice</option>
+                    <option value="V">Veg</option>
+                    <option value="N">Non Veg</option>
+                    <option value="D">No Food</option>
+                </select>
+                <input id="passengerchildberth2" name="passengerchildberth" type="checkbox"><label>Half seat</label><br>
+
+                <label>Psg 3</label>
+                <input id="passenger-name-3" name="name" size="16" placeholder="Name" maxlength="16">
+                <input id="age-3" name="age" size="5" placeholder="Age">
+                <select id="passenger-gender-3" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <select id="passenger-berth-3" name="berth">
+                    <option value="">Berth</option>
+                    <option value="UB">Upper</option>
+                    <option value="LB">Lower</option>
+                    <option value="MB">Middle</option>
+                    <option value="SL">Side Lower</option>
+                    <option value="SU">Side Upper</option>
+                    <option value="CB">Cabin</option>
+                    <option value="CP">Coupe</option>
+                    <option value="SM">Side Middle</option>
+                </select>
+                <select id="passenger-food-3" name="food">
+                    <option value="">Food Choice</option>
+                    <option value="V">Veg</option>
+                    <option value="N">Non Veg</option>
+                    <option value="D">No Food</option>
+                </select>
+                <input id="passengerchildberth3" name="passengerchildberth" type="checkbox"><label>Half seat</label><br>
+
+                <label>Psg 4</label>
+                <input id="passenger-name-4" name="name" size="16" placeholder="Name" maxlength="16">
+                <input id="age-4" name="age" size="5" placeholder="Age">
+                <select id="passenger-gender-4" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <select id="passenger-berth-4" name="berth">
+                    <option value="">Berth</option>
+                    <option value="UB">Upper</option>
+                    <option value="LB">Lower</option>
+                    <option value="MB">Middle</option>
+                    <option value="SL">Side Lower</option>
+                    <option value="SU">Side Upper</option>
+                    <option value="CB">Cabin</option>
+                    <option value="CP">Coupe</option>
+                    <option value="SM">Side Middle</option>
+                </select>
+                <select id="passenger-food-4" name="food">
+                    <option value="">Food Choice</option>
+                    <option value="D">No Food</option>
+                    <option value="V">Veg</option>
+                    <option value="N">Non Veg</option>
+                </select>
+                <input id="passengerchildberth4" name="passengerchildberth" type="checkbox"><label>Half seat</label><br>
+
+                <label>Psg 5</label>
+                <input id="passenger-name-5" name="name" size="16" placeholder="Name" maxlength="16">
+                <input id="age-5" name="age" size="5" placeholder="Age">
+                <select id="passenger-gender-5" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <select id="passenger-berth-5" name="berth">
+                    <option value="">Berth</option>
+                    <option value="UB">Upper</option>
+                    <option value="LB">Lower</option>
+                    <option value="MB">Middle</option>
+                    <option value="SL">Side Lower</option>
+                    <option value="SU">Side Upper</option>
+                    <option value="CB">Cabin</option>
+                    <option value="CP">Coupe</option>
+                    <option value="SM">Side Middle</option>
+                </select>
+                <select id="passenger-food-5" name="food">
+                    <option value="">Food Choice</option>
+                    <option value="D">No Food</option>
+                    <option value="V">Veg</option>
+                    <option value="N">Non Veg</option>
+                </select>
+                <input id="passengerchildberth5" name="passengerchildberth" type="checkbox"><label>Half seat</label><br>
+
+                <label>Psg 6</label>
+                <input id="passenger-name-6" name="name" size="16" placeholder="Name" maxlength="16">
+                <input id="age-6" name="age" size="5" placeholder="Age">
+                <select id="passenger-gender-6" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+                <select id="passenger-berth-6" name="berth">
+                    <option value="">Berth</option>
+                    <option value="UB">Upper</option>
+                    <option value="LB">Lower</option>
+                    <option value="MB">Middle</option>
+                    <option value="SL">Side Lower</option>
+                    <option value="SU">Side Upper</option>
+                    <option value="CB">Cabin</option>
+                    <option value="CP">Coupe</option>
+                    <option value="SM">Side Middle</option>
+                </select>
+                <select id="passenger-food-6" name="food">
+                    <option value="">Food Choice</option>
+                    <option value="D">No Food</option>
+                    <option value="V">Veg</option>
+                    <option value="N">Non Veg</option>
+                </select>
+                <input id="passengerchildberth6" name="passengerchildberth" type="checkbox"><label>Half seat</label><br>
+            </div>
+
+            <div class="field-group">
+                <h1><span>Infant Without Berth</span></h1>
+                <label>Infant 1</label>
+                <input id="Infant-name-1" name="name" size="16" placeholder="Name" maxlength="16">
+                <select id="Infant-age-1" name="age">
+                    <option value="0">Below one year</option>
+                    <option value="1">One year</option>
+                    <option value="2">Two years</option>
+                    <option value="3">Three years</option>
+                    <option value="4">Four years</option>
+                </select>
+                <select id="Infant-gender-1" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select><br>
+
+                <label>Infant 2</label>
+                <input id="Infant-name-2" name="name" size="16" placeholder="Name" maxlength="16">
+                <select id="Infant-age-2" name="age">
+                    <option value="0">Below one year</option>
+                    <option value="1">One year</option>
+                    <option value="2">Two years</option>
+                    <option value="3">Three years</option>
+                    <option value="4">Four years</option>
+                </select>
+                <select id="Infant-gender-2" name="gender">
+                    <option value="">Gender</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
+                </select>
+            </div>
+
+            <div class="field-group">
+                <h1><span>Payment choice</span></h1>
+                <label>Mode</label>
+                <select id="paymentMethod" name="paymentMethod">
+                    <option value="HDFCDB">HDFC CARD (Bypassed)</option>
+                    <option value="IRCUPIQR">Irctc QR</option>
+                    <option value="IRCUPIID">Irctc UPI ID</option>
+                    <option value="IRCWA">Irctc e-Wallet</option>
+                    <option value="PAYTMUPIQR">Paytm QR</option>
+                    <option value="PAYTMUPIID">Paytm UPI ID</option>
+                    <option value="PHONEPEUPIQR">PhonePe QR</option>
+                    <option value="MOBUPIID">PhonePe UPI ID</option>
+                </select>
+                <label>UPI ID</label><input id="vpa" name="vpa" size="30" placeholder="e.g. 9329xxxx45@paytm"><div id="carddetails"><br><label>Card</label><input id="cardnumber" name="cardnumber" size="23" placeholder="1234 1234 1234 1234" maxlength="23"> <input id="cardexpiry" name="cardexpiry" size="5" placeholder="MM/YY" maxlength="5"> <input id="cardcvv" name="cardcvv" size="3" placeholder="CVV" maxlength="3"> <input id="cardholder" name="cardholder" size="16" placeholder="Name on Card" maxlength="16"><br><br><label>HDFC static(3d) Password</label><input id="staticpassword" name="staticpassword" size="23" placeholder="" maxlength="23" type="password"> <label>Show password</label><input id="showhdfcpass" name="showhdfcpass" type="checkbox"><br><label><input id="submitBtn2autoClickCheckbox" type="checkbox"> Auto Submit static Password</label> <select id="cardtype" name="cardtype" hidden><option value=""></option><option value="0">VISA</option><option value="1">Mastercard</option><option value="2">RuPay</option></select></div></div><div class="field-group"><h1><span>Additional choice</span></h1><input id="autoCaptcha" name="autoCaptcha" type="checkbox"> <label>Captcha Auto fill</label> <label>Captcha Submit mode</label> <select id="CaptchaSubmitMode" name="CaptchaSubmitMode"><option value="A">Auto</option><option value="M">Manual</option></select><br><br><input id="psgManual" name="psgManual" type="checkbox"> <label>Submit Passenger page manually</label> <input id="paymentManual" name="paymentManual" type="checkbox"> <label>Submit Payment page manually</label><br><br><input id="autoUpgradation" name="autoUpgradation" type="checkbox"> <label>Consider Auto Upgradation</label> <input id="confirmberths" name="confirmberths" type="checkbox"> <label>Book only if confirm berths are allotted.</label> <label>Travel insurance</label> <input id="travelInsuranceOpted-1" name="travelInsuranceOpted" type="radio" value="yes"> Yes <input id="travelInsuranceOpted-2" name="travelInsuranceOpted" type="radio" value="no"> No<br><br><label>Reservation choice</label> <select id="reservationchoice" name="reservationchoice" style="max-width:250px"><option value="Reservation Choice">Reservation Choice<option value="Book, only if all berths are allotted in same coach.">Book, only if all berths are allotted in same coach.<option value="Book, only if at least 1 lower berth is allotted.">Book, only if at least 1 lower berth is allotted.<option value="Book, only if 2 lower berths are allotted.">Book, only if 2 lower berths are allotted.</option>
+                </select><br><br>
+                <label>Preferred Coach No.</label>
+                <input id="prefcoach" name="prefcoach" size="5" placeholder="" maxlength="5">
+                <label>Mobile number</label>
+                <input id="mobileNumber" name="mobileNumber" size="10" maxlength="10">
+                <input id="tokenString" name="tokenString" hidden>
+                <input id="projectId" name="projectId" hidden>
+            </div>
+
+            <div class="field-group">
+                <h1><span>Fare Limit</span></h1>
+                <input id="enableFareLimit" name="enableFareLimit" type="checkbox">
+                <label>Enable Fare Limit Check</label><br><br>
+                <label>Max Fare:</label>
+                <input id="maxFareAmount" name="maxFareAmount" size="10" placeholder="e.g. 1500" type="number"><br><br>
+                <input id="bookInPopup" name="bookInPopup" type="checkbox">
+                <label>Book in Popup Window</label>
+            </div>
+
+            <div class="field-group">
+                <h1><span>Proxy Settings</span></h1>
+                <label><input name="proxySelection" type="radio" value="disabled" checked> Disable Proxy</label><br><br>
+                <div id="proxy-list"></div>
+            </div>
+
+            <br>
+            <button id="submit-btn" style="background-color:Green;color:#fff" class="registerbtn" type="button">Save</button>
+            <button id="clear-btn" style="background-color:Red;color:#fff" class="registerbtn" type="button">Clear</button>
+            <button id="connect-btn" style="background-color:#ff8c00;color:#fff" class="registerbtn" type="button"><i id="loader"></i>Book</button>
+            <button id="load-btn-1" style="background-color:#9400d3;color:#fff" class="registerbtn" type="button">Buy plan</button>
+            <button id="OpenSite" style="background-color:#0d47a1;color:#fff" class="registerbtn" type="button">Website</button>
+        </div>
+
+        <div id="dvRegister">
+            <div class="field-group" style="padding-bottom:0;text-align:center">
+                <h1><span>Enter your key</span></h1>
+                <label><b>Key</b></label>
+                <input id="subscriber-key" name="subscriber-key" size="15" style="border:1px solid;height:32px">
+                <button id="login-btn" style="background-color:Green;color:#fff;width:auto;padding:8px 15px;margin-right:5px" class="registerbtn" type="button">Save</button>
+                <button id="connect-btn-license" style="background-color:#ff8c00;color:#fff;width:auto;padding:8px 15px" class="registerbtn" type="button"><i id="loader-license"></i>Book</button>
+                <p style="margin:4px"><span id="dvMessage" style="color:red"></span></p>
+            </div>
+        </div>
+    </form>
+    <script>
+        // popup.js content embedded here
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get references to HTML elements
+            const dvMain = document.getElementById('dvMain');
+            const dvRegister = document.getElementById('dvRegister');
+            const subscriberKeyInput = document.getElementById('subscriber-key');
+            const loginBtn = document.getElementById('login-btn');
+            const dvMessage = document.getElementById('dvMessage');
+            const submitBtn = document.getElementById('submit-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const connectBtn = document.getElementById('connect-btn'); // The "Book" button
+            const openSiteBtn = document.getElementById('OpenSite');
+            const showIrctcPswdCheckbox = document.getElementById('showirctcpswd');
+            const irctcPasswordInput = document.getElementById('irctc-password');
+            const showHdfcPassCheckbox = document.getElementById('showhdfcpass');
+            const staticPasswordInput = document.getElementById('staticpassword');
+            const openPopupTabBtn = document.getElementById('openPopupTab');
+
+            // --- Storage Handler ---
+            // This abstraction allows using chrome.storage.local when available (as an extension)
+            // and localStorage as a fallback (when opened directly in a browser tab for testing).
+            const StorageHandler = {
+                get: async (key) => {
+                    if (window.chrome && chrome.storage && chrome.storage.local) {
+                        return (await chrome.storage.local.get(key))[key];
+                    } else {
+                        // Fallback to localStorage
+                        const data = localStorage.getItem(key);
+                        return data ? JSON.parse(data) : undefined;
+                    }
+                },
+                set: async (key, value) => {
+                    if (window.chrome && chrome.storage && chrome.storage.local) {
+                        await chrome.storage.local.set({ [key]: value });
+                    } else {
+                        // Fallback to localStorage
+                        localStorage.setItem(key, JSON.stringify(value));
+                    }
+                },
+                remove: async (key) => {
+                    if (window.chrome && chrome.storage && chrome.storage.local) {
+                        await chrome.storage.local.remove(key);
+                    } else {
+                        // Fallback to localStorage
+                        localStorage.removeItem(key);
+                    }
+                }
+            };
+
+            // Function to load saved data into the form
+            const loadFormData = async () => {
+                console.log('loadFormData called.');
+                try {
+                    const formData = await StorageHandler.get('autofillData');
+                    console.log('autofillData from storage:', formData);
+                    if (formData) {
+                        for (const key in formData) {
+                            const element = document.getElementById(key);
+                            if (element) {
+                                if (element.type === 'checkbox') {
+                                    element.checked = formData[key]; // Boolean value
+                                } else if (element.type === 'radio') {
+                                    if (element.name in formData && element.value === formData[element.name]) {
+                                        element.checked = true;
+                                    } else {
+                                        element.checked = false; // Ensure other radios in group are unchecked
+                                    }
+                                } else {
+                                    element.value = formData[key];
+                                }
+                            }
+                        }
+                        console.log('Form data loaded successfully.');
+                    } else {
+                        console.log('No autofillData found in storage.');
+                    }
+                } catch (error) {
+                    console.error("Error loading form data:", error);
+                }
+            };
+
+            // Function to save form data to storage
+            const saveFormData = async () => {
+                console.log('saveFormData called.');
+                const formData = {};
+                document.querySelectorAll('input, select, textarea').forEach(element => {
+                    if (element.id) {
+                        if (element.type === 'checkbox') {
+                            formData[element.id] = element.checked;
+                        } else if (element.type === 'radio') {
+                            if (element.checked) {
+                                formData[element.name] = element.value;
+                            }
+                        } else if (element.id.startsWith('passenger-') || element.id.startsWith('Infant-')) {
+                            const parts = element.id.split('-');
+                            const prefix = parts[0];
+                            const field = parts[1];
+                            const index = parts[2];
+
+                            if (!formData[`${prefix}-${index}`]) {
+                                formData[`${prefix}-${index}`] = {};
+                            }
+                            if (element.type === 'checkbox') {
+                                formData[`${prefix}-${index}`][field] = element.checked;
+                            } else {
+                                formData[`${prefix}-${index}`][field] = element.value;
+                            }
+                        } else {
+                            formData[element.id] = element.value;
+                        }
+                    }
+                });
+
+                document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    if (radio.checked) {
+                        formData[radio.name] = radio.value;
+                    }
+                });
+
+                console.log('Form data collected before saving:', formData);
+
+                try {
+                    await StorageHandler.set('autofillData', formData);
+                    console.log('Form data saved to storage:', formData);
+                    return true;
+                } catch (error) {
+                    console.error('Error saving form data to storage:', error);
+                    return false;
+                }
+            };
+
+            // Load initial license key status
+            const loadLicenseKeyStatus = async () => {
+                console.log('loadLicenseKeyStatus called.');
+                try {
+                    const licenseKey = await StorageHandler.get('licenseKey');
+                    console.log('License key from storage:', licenseKey);
+                    if (licenseKey) {
+                        subscriberKeyInput.value = licenseKey;
+                        dvRegister.style.display = 'none';
+                        dvMain.style.display = 'block';
+                        console.log('License key found, showing main form.');
+                        loadFormData();
+                    } else {
+                        dvRegister.style.display = 'block';
+                        dvMain.style.display = 'none';
+                        console.log('No license key found, showing registration form.');
+                    }
+                } catch (error) {
+                    console.error("Error retrieving license key:", error);
+                    dvRegister.style.display = 'block'; // Fallback to register if error
+                    dvMain.style.display = 'none';
+                }
+            };
+
+            // Event listener for Save button (for main form data)
+            submitBtn.addEventListener('click', async () => {
+                console.log('Save (main form) button clicked.');
+                const saved = await saveFormData();
+                if (saved) {
+                    dvMessage.textContent = 'Data Saved Successfully!';
+                    dvMessage.style.color = 'green';
+                    setTimeout(() => dvMessage.textContent = '', 3000);
+                } else {
+                    dvMessage.textContent = 'Failed to save data.';
+                    dvMessage.style.color = 'red';
+                }
+            });
+
+            // Event listener for Clear button
+            clearBtn.addEventListener('click', async () => {
+                console.log('Clear button clicked.');
+                document.querySelectorAll('input, select, textarea').forEach(element => {
+                    if (element.type === 'checkbox' || element.type === 'radio') {
+                        element.checked = false;
+                    } else {
+                        element.value = '';
+                    }
+                });
+                try {
+                    await StorageHandler.remove('autofillData');
+                    dvMessage.textContent = 'All data cleared!';
+                    dvMessage.style.color = 'green';
+                    setTimeout(() => dvMessage.textContent = '', 3000);
+                } catch (error) {
+                    console.error('Error clearing data:', error);
+                    dvMessage.textContent = 'Failed to clear data.';
+                    dvMessage.style.color = 'red';
+                }
+            });
+
+            // Event listener for "Book" button (`connect-btn`)
+            connectBtn.addEventListener('click', async () => {
+                console.log('Book button clicked.');
+                const saved = await saveFormData();
+                if (!saved) {
+                    dvMessage.textContent = 'Please save data before attempting to book.';
+                    dvMessage.style.color = 'red';
+                    return;
+                }
+
+                const autofillData = await StorageHandler.get('autofillData');
+
+                // Check if running as a Chrome extension and if tabs API is available
+                if (window.chrome && chrome.tabs && chrome.tabs.query && chrome.tabs.sendMessage) {
+                    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+                    if (tab && tab.url && (tab.url.includes('irctc.co.in') || tab.url.includes('www.irctc.co.in'))) {
+                        try {
+                            console.log('Sending autofill message to content script...');
+                            await chrome.tabs.sendMessage(tab.id, { action: 'autofill', data: autofillData });
+                            dvMessage.textContent = 'Attempting to autofill...';
+                            dvMessage.style.color = 'blue';
+                        } catch (error) {
+                            console.error('Error sending message to content script:', error);
+                            dvMessage.textContent = 'Failed to send autofill command. Make sure you are on an IRCTC page.';
+                            dvMessage.style.color = 'red';
+                        }
+                    } else {
+                        dvMessage.textContent = 'Please navigate to an IRCTC booking page before clicking "Book".';
+                        dvMessage.style.color = 'orange';
+                    }
+                } else {
+                    console.warn('Not running as a Chrome extension or chrome.tabs API not available. Cannot send autofill command to IRCTC page.');
+                    dvMessage.textContent = 'Autofill functionality requires running as a Chrome extension.';
+                    dvMessage.style.color = 'orange';
+                }
+            });
+
+            // Event listener for license key Save button (login-btn)
+            loginBtn.addEventListener('click', async () => {
+                console.log('License Key Save button clicked.');
+                const key = subscriberKeyInput.value.trim();
+                if (key) {
+                    try {
+                        await StorageHandler.set('licenseKey', key);
+                        console.log(`License key "${key}" saved to storage.`);
+                        loadLicenseKeyStatus();
+                        dvMessage.textContent = 'Key Saved! Ready to use.';
+                        dvMessage.style.color = 'green';
+                        setTimeout(() => dvMessage.textContent = '', 3000);
+                    } catch (error) {
+                        console.error('Error saving license key to storage:', error);
+                        dvMessage.textContent = 'Error saving key. Please check extension permissions (storage).';
+                        dvMessage.style.color = 'red';
+                    }
+                } else {
+                    dvMessage.textContent = 'Please enter a valid key.';
+                    dvMessage.style.color = 'red';
+                }
+            });
+
+            // Event listener for "Open in New Tab" button
+            openPopupTabBtn.addEventListener('click', () => {
+                console.log('Open in New Tab button clicked.');
+                if (window.chrome && chrome.runtime && chrome.runtime.getURL) {
+                    // Running as extension
+                    chrome.tabs.create({ url: chrome.runtime.getURL('popup.html') });
+                } else {
+                    // Fallback for non-extension environment
+                    window.open('popup.html', '_blank');
+                }
+            });
+
+            // Event listener for "Website" button
+            openSiteBtn.addEventListener('click', () => {
+                console.log('Opening IRCTC website.');
+                // Always use chrome.tabs.create for opening new tabs in extensions
+                if (window.chrome && chrome.tabs && chrome.tabs.create) {
+                     chrome.tabs.create({ url: 'https://www.irctc.co.in/nget/train-search' });
+                } else {
+                    window.open('https://www.irctc.co.in/nget/train-search', '_blank');
+                }
+            });
+
+            // Show/Hide password for IRCTC
+            showIrctcPswdCheckbox.addEventListener('change', () => {
+                irctcPasswordInput.type = showIrctcPswdCheckbox.checked ? 'text' : 'password';
+                console.log('IRCTC password visibility toggled.');
+            });
+
+            // Show/Hide password for HDFC static
+            showHdfcPassCheckbox.addEventListener('change', () => {
+                staticPasswordInput.type = showHdfcPassCheckbox.checked ? 'text' : 'password';
+                console.log('HDFC static password visibility toggled.');
+            });
+
+            // --- Autocomplete Functionality ---
+            const stations = [
+                "New Delhi (NDLS)", "Mumbai Central (BCT)", "Chennai Central (MAS)",
+                "Kolkata (HWH)", "Bengaluru City (SBC)", "Hyderabad Decan (HYB)",
+                "Ahmedabad Jn (ADI)", "Jaipur (JP)", "Lucknow NR (LKO)",
+                "Patna Jn (PNBE)", "Pune Jn (PUNE)", "Secunderabad Jn (SC)",
+                "Varanasi Jn (BSB)", "Surat (ST)", "Indore Jn (INDB)",
+                "Bhopal Jn (BPL)", "Nagpur (NGP)", "Ernakulam Jn (ERS)",
+                "Thiruvananthapuram Central (TVC)", "Bhubaneswar (BBS)",
+                "Guwahati (GHY)", "Agra Cantt (AGC)", "Amritsar Jn (ASR)"
+            ];
+
+            const trains = [
+                "12301 Howrah Rajdhani", "12001 Shatabdi Express", "12951 Mumbai Rajdhani",
+                "12137 Punjab Mail", "12834 Howrah Hapa Express", "22401 AC Superfast",
+                "12311 Kalka Mail", "12401 Magadh Express", "12555 Gorakhdham Express",
+                "12621 Tamil Nadu Express", "12903 Golden Temple Mail", "12925 Paschim Express"
+            ];
+
+            function autocomplete(inp, arr) {
+                let currentFocus;
+                inp.addEventListener("input", function(e) {
+                    let a, b, i, val = this.value;
+                    closeAllLists();
+                    if (!val) { return false;}
+                    currentFocus = -1;
+                    a = document.createElement("DIV");
+                    a.setAttribute("id", this.id + "autocomplete-list");
+                    a.setAttribute("class", "autocomplete-items");
+                    this.parentNode.appendChild(a);
+                    for (i = 0; i < arr.length; i++) {
+                        if (arr[i].toUpperCase().includes(val.toUpperCase())) {
+                            b = document.createElement("DIV");
+                            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                            b.innerHTML += arr[i].substr(val.length);
+                            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                            b.addEventListener("click", function(e) {
+                                inp.value = this.getElementsByTagName("input")[0].value;
+                                closeAllLists();
+                            });
+                            a.appendChild(b);
+                        }
+                    }
+                });
+
+                inp.addEventListener("keydown", function(e) {
+                    let x = document.getElementById(this.id + "autocomplete-list");
+                    if (x) x = x.getElementsByTagName("div");
+                    if (e.keyCode == 40) { // DOWN arrow
+                        currentFocus++;
+                        addActive(x);
+                    } else if (e.keyCode == 38) { // UP arrow
+                        currentFocus--;
+                        addActive(x);
+                    } else if (e.keyCode == 13) { // ENTER key
+                        e.preventDefault();
+                        if (currentFocus > -1) {
+                            if (x) x[currentFocus].click();
+                        }
+                    }
+                });
+
+                function addActive(x) {
+                    if (!x) return false;
+                    removeActive(x);
+                    if (currentFocus >= x.length) currentFocus = 0;
+                    if (currentFocus < 0) currentFocus = (x.length - 1);
+                    x[currentFocus].classList.add("autocomplete-active");
+                }
+
+                function removeActive(x) {
+                    for (let i = 0; i < x.length; i++) {
+                        x[i].classList.remove("autocomplete-active");
+                    }
+                }
+
+                function closeAllLists(elmnt) {
+                    const x = document.getElementsByClassName("autocomplete-items");
+                    for (let i = 0; i < x.length; i++) {
+                        if (elmnt != x[i] && elmnt != inp) {
+                            x[i].parentNode.removeChild(x[i]);
+                        }
+                    }
+                }
+
+                document.addEventListener("click", function (e) {
+                    closeAllLists(e.target);
+                });
+            }
+
+            // Apply autocomplete to relevant inputs
+            autocomplete(document.getElementById("from-station-input"), stations);
+            autocomplete(document.getElementById("destination-station-input"), stations);
+            autocomplete(document.getElementById("train-no"), trains);
+
+
+            // Initial load of license key status and form data when popup opens
+            loadLicenseKeyStatus();
+        });
+    </script>
+</body>
+</html>
